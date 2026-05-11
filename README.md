@@ -1,4 +1,3 @@
-````md
 # ψ POSEIDON
 
 > AI-powered mystical identity & astrology platform built on Solana.  
