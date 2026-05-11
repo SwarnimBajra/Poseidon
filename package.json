@@ -10,7 +10,11 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."
+    
   },
+  "engines": {
+  "node": "18.x"
+},
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
     "@google/generative-ai": "^0.24.1",
