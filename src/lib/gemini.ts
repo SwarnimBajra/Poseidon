@@ -1,43 +1,70 @@
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
+const BASE_URL =
+  "https://generativelanguage.googleapis.com/v1/models";
+
 const MODEL = "gemini-2.5-flash";
 
-const BASE_URL =
-  `https://generativelanguage.googleapis.com/v1/models/${MODEL}:generateContent`;
-
+/* TEXT + JSON */
 export async function geminiJSON(prompt: string) {
-  if (!API_KEY) throw new Error("Missing Gemini API key");
-
-  const res = await fetch(`${BASE_URL}?key=${API_KEY}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [{ text: prompt }],
-        },
-      ],
-      generationConfig: {
-        temperature: 0.9,
-      },
-    }),
-  });
+  const res = await fetch(
+    `${BASE_URL}/${MODEL}:generateContent?key=${API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+      }),
+    }
+  );
 
   const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(
-      `Gemini error ${res.status}: ${JSON.stringify(data).slice(0, 200)}`
-    );
-  }
-
-  const text =
-    data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
 
   try {
     return JSON.parse(text);
   } catch {
-    const match = text.match(/\{[\s\S]*\}/);
-    return match ? JSON.parse(match[0]) : {};
+    return { raw: text };
+  }
+}
+
+/* 🧿 VISION (PALM READING) */
+export async function geminiVision(prompt: string, imageBase64: string) {
+  const cleanBase64 = imageBase64.replace(
+    /^data:image\/\w+;base64,/,
+    ""
+  );
+
+  const res = await fetch(
+    `${BASE_URL}/${MODEL}:generateContent?key=${API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              { text: prompt },
+              {
+                inlineData: {
+                  mimeType: "image/jpeg",
+                  data: cleanBase64,
+                },
+              },
+            ],
+          },
+        ],
+      }),
+    }
+  );
+
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { raw: text };
   }
 }
