@@ -217,5 +217,3 @@ Frontend → Server Functions → Gemini → Structured JSON → UI
 # 📜 License
 
 MIT — build, fork, and create something cosmic 🌌
-
-```
