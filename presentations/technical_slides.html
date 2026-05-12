@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POSEIDON - Technical Overview</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Grotesk:wght@400;600&family=JetBrains+Mono&display=swap');
+
+        :root {
+            --background: oklch(0.1 0.04 290);
+            --foreground: oklch(0.96 0.02 280);
+            --primary: oklch(0.78 0.2 220);
+            --accent: oklch(0.65 0.25 320);
+            --gold: oklch(0.85 0.16 85);
+            --gradient-cosmos: radial-gradient(ellipse at 20% 0%, oklch(0.3 0.18 305 / 0.5) 0%, transparent 50%),
+                               radial-gradient(ellipse at 80% 30%, oklch(0.3 0.2 220 / 0.4) 0%, transparent 55%),
+                               radial-gradient(ellipse at 50% 100%, oklch(0.25 0.15 280 / 0.5) 0%, transparent 60%),
+                               linear-gradient(180deg, oklch(0.08 0.04 290) 0%, oklch(0.06 0.03 280) 100%);
+            --gradient-text: linear-gradient(180deg, oklch(0.98 0.02 220) 0%, oklch(0.78 0.2 220) 50%, oklch(0.65 0.27 305) 100%);
+            --font-display: "Cinzel", "Space Grotesk", serif;
+            --font-body: "Space Grotesk", system-ui, sans-serif;
+            --font-mono: "JetBrains Mono", monospace;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--gradient-cosmos);
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: var(--font-body);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide-container {
+            width: 90vw;
+            height: 80vh;
+            position: relative;
+            background: oklch(0.16 0.06 290 / 0.55);
+            backdrop-filter: blur(24px) saturate(140%);
+            border: 1px solid oklch(0.78 0.2 220 / 0.18);
+            border-radius: 2rem;
+            box-shadow: 0 0 80px -10px oklch(0.65 0.27 305 / 0.3);
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 4rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-display);
+            margin-top: 0;
+        }
+
+        .text-cosmic {
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 24px oklch(0.78 0.2 220 / 0.3);
+        }
+
+        .title-slide {
+            text-align: center;
+            align-items: center;
+        }
+
+        .title-slide h1 {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        ul {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: oklch(0.9 0.02 280);
+        }
+
+        .code-block {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            color: #a9b7c6;
+            white-space: pre-wrap;
+            margin-top: 1rem;
+        }
+
+        .highlight { color: #cc7832; }
+        .string { color: #6a8759; }
+
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary);
+            color: var(--background);
+        }
+
+        .notes {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.3);
+            text-align: center;
+            width: 80%;
+        }
+
+        table {
+            width: 80%;
+            margin: 2rem auto;
+            border-collapse: collapse;
+            font-size: 1.2rem;
+        }
+        th, td {
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem;
+            text-align: center;
+        }
+        th { background: rgba(255,255,255,0.05); color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div class="slide-container">
+        <!-- Slide 1 -->
+        <div class="slide active title-slide">
+            <div style="font-family: var(--font-display); font-size: 5rem; color: var(--primary); margin-bottom: 1rem;">ψ</div>
+            <h1 class="text-cosmic">POSEIDON</h1>
+            <div class="subtitle">Technical Overview</div>
+            <p style="margin-top: 2rem; opacity: 0.7;">AI-Powered Cosmic Identity on Solana</p>
+            <div class="notes">Script: "This is the technical overview of Poseidon — an AI-powered cosmic identity platform on Solana. Let's walk through how it works."</div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide">
+            <h2 class="text-cosmic" style="font-size: 3rem; text-align: center;">Architecture Overview</h2>
+            <div style="display: flex; justify-content: center; margin-top: 2rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 800px; width: 100%;">
+                    <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem; text-align: center;">
+                        <h3 style="color: var(--primary);">Frontend</h3>
+                        <p>TanStack Start (React + Vite SSR)</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem; text-align: center; border: 1px solid #4285f4;">
+                        <h3 style="color: #4285f4;">AI Engine</h3>
+                        <p>Google Gemini API (2.5 Flash)</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem; text-align: center; border: 1px solid #3ecf8e;">
+                        <h3 style="color: #3ecf8e;">Backend</h3>
+                        <p>Supabase (Auth + Storage)</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem; text-align: center; border: 1px solid #14f195;">
+                        <h3 style="color: #14f195;">Blockchain</h3>
+                        <p>Solana Devnet (Metaplex Core)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="notes">Script: "Client is TanStack Start, flowing through type-safe createServerFn to Gemini 2.5 Flash for AI, and Metaplex Core for Solana mints."</div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide">
+            <h2 class="text-cosmic" style="font-size: 3rem;">AI Pipeline Deep Dive</h2>
+            <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+                    <ul>
+                        <li><strong>Zod Validation:</strong> Strict schema parsing for inputs</li>
+                        <li><strong>Structured Prompts:</strong> Instructing Gemini to return valid JSON</li>
+                        <li><strong>JSON Parsing & Fallback:</strong> Regex extraction if model uses markdown</li>
+                        <li><strong>Multimodal Vision:</strong> Palm reading via inline Base64 data</li>
+                    </ul>
+                </div>
+                <div style="flex: 1;">
+                    <div class="code-block">
+<span class="highlight">const</span> AstroInput = z.object({
+  name: z.string(),
+  birthDate: z.string(),
+});
+
+<span class="highlight">export const</span> astrologyReading = createServerFn()
+  .inputValidator(d => AstroInput.parse(d))
+  .handler(<span class="highlight">async</span> ({ data }) => {
+    <span class="highlight">const</span> prompt = <span class="string">`Return ONLY valid JSON...`</span>;
+    <span class="highlight">const</span> parsed = <span class="highlight">await</span> geminiJSON(prompt);
+    <span class="highlight">return</span> { ...data, ...parsed };
+  });
+                    </div>
+                </div>
+            </div>
+            <div class="notes">Script: "We use Zod for validation, structured prompts for JSON outputs, and handle both text and multimodal vision (for palms) through Gemini."</div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide">
+            <h2 class="text-cosmic" style="font-size: 3rem; text-align: center;">Solana Integration Flow</h2>
+            <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 1rem; max-width: 700px; margin: 2rem auto; text-align: center; font-size: 1.4rem; line-height: 2;">
+                <div>🔌 User connects Phantom wallet</div>
+                <div style="color: var(--primary);">↓</div>
+                <div>✨ Astrology profile generated (Server-side AI)</div>
+                <div style="color: var(--primary);">↓</div>
+                <div>📝 NFT metadata composed (Archetype, Aura, Rarity)</div>
+                <div style="color: var(--primary);">↓</div>
+                <div>⛏️ Mint to Solana Devnet (Metaplex Core)</div>
+            </div>
+            <div class="notes">Script: "Flow starts with wallet connection, profile generation via AI, composing the metadata, and finally minting via Metaplex Core."</div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide">
+            <h2 class="text-cosmic" style="font-size: 3rem;">Data Flow & State Management</h2>
+            <ul>
+                <li><strong style="color: var(--primary);">Client-side:</strong> <code>localStorage</code> hooks (<code>useProfile</code>, <code>useNFTs</code>) for instant persistence and zero network latency.</li>
+                <li><strong style="color: var(--primary);">Server-side:</strong> Supabase for durable storage and authentication.</li>
+                <li><strong style="color: var(--gold);">Security Isolation:</strong> Gemini API keys and sensitive operations execute entirely within Vite's SSR layer via <code>createServerFn</code>. Keys never touch the client.</li>
+            </ul>
+            <div class="notes">Script: "We use a dual approach: localStorage for instant client state, and SSR server functions to keep API keys completely isolated from the browser."</div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide">
+            <h2 class="text-cosmic" style="font-size: 3rem; text-align: center;">NFT & Rarity System</h2>
+            <table>
+                <tr>
+                    <th>Fortune Score</th>
+                    <th>Rarity Tier</th>
+                    <th>Color Code</th>
+                </tr>
+                <tr>
+                    <td>95 – 100</td>
+                    <td style="color: oklch(0.78 0.25 25); font-weight: bold;">Mythic</td>
+                    <td>Crimson</td>
+                </tr>
+                <tr>
+                    <td>85 – 94</td>
+                    <td style="color: oklch(0.85 0.16 85); font-weight: bold;">Legendary</td>
+                    <td>Gold</td>
+                </tr>
+                <tr>
+                    <td>75 – 84</td>
+                    <td style="color: oklch(0.65 0.27 305); font-weight: bold;">Epic</td>
+                    <td>Violet</td>
+                </tr>
+                <tr>
+                    <td>60 – 74</td>
+                    <td style="color: oklch(0.78 0.2 220); font-weight: bold;">Rare</td>
+                    <td>Cyan</td>
+                </tr>
+                <tr>
+                    <td>40 – 59</td>
+                    <td style="color: oklch(0.7 0.05 220); font-weight: bold;">Common</td>
+                    <td>Silver</td>
+                </tr>
+            </table>
+            <div class="notes">Script: "The rarity system is deterministic based on the AI fortune score. Metadata is encoded directly into the NFT alongside visual traits."</div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="slide">
+            <h2 class="text-cosmic" style="font-size: 3rem;">Security & Production Readiness</h2>
+            <ul style="margin-top: 2rem;">
+                <li>✅ API Keys strictly server-side (env variables)</li>
+                <li>✅ Strict input validation via Zod schemas</li>
+                <li>✅ 5MB limit on multimodal image uploads</li>
+                <li>✅ Robust JSON extraction fallback for LLM responses</li>
+                <li>🚀 <strong>Upgrade Path:</strong> Swap mock wallet for standard Wallet Adapter, deploy to Mainnet, add Supabase RLS.</li>
+            </ul>
+            <div class="notes">Script: "Security checklist includes server-side keys, Zod validation, and upload limits. We have a clear path to production mainnet."</div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="slide title-slide">
+            <h2 class="text-cosmic" style="font-size: 4rem;">Roadmap</h2>
+            <div style="font-size: 2rem; margin-top: 3rem; color: var(--primary);">
+                Hackathon &rarr; Devnet &rarr; Mainnet &rarr; Mobile &rarr; <span style="color: var(--gold);">Identity Protocol</span>
+            </div>
+            <p style="margin-top: 3rem; font-size: 1.5rem; opacity: 0.8;">Thank you for reviewing our technical architecture.</p>
+            <div class="notes">Script: "What's next: Mainnet, Mobile, and making Poseidon a composable identity protocol for Solana. Thank you."</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="prevSlide()">&larr;</button>
+        <button onclick="nextSlide()">&rarr;</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showSlide(index) {
+            slides.forEach(s => s.classList.remove('active'));
+            if (index >= slides.length) currentSlide = 0;
+            if (index < 0) currentSlide = slides.length - 1;
+            slides[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+    </script>
+</body>
+</html>

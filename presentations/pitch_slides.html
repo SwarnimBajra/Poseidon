@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POSEIDON - Pitch Presentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Space+Grotesk:wght@400;600&display=swap');
+
+        :root {
+            --background: oklch(0.1 0.04 290);
+            --foreground: oklch(0.96 0.02 280);
+            --primary: oklch(0.78 0.2 220);
+            --accent: oklch(0.65 0.25 320);
+            --gold: oklch(0.85 0.16 85);
+            --gradient-cosmos: radial-gradient(ellipse at 20% 0%, oklch(0.3 0.18 305 / 0.5) 0%, transparent 50%),
+                               radial-gradient(ellipse at 80% 30%, oklch(0.3 0.2 220 / 0.4) 0%, transparent 55%),
+                               radial-gradient(ellipse at 50% 100%, oklch(0.25 0.15 280 / 0.5) 0%, transparent 60%),
+                               linear-gradient(180deg, oklch(0.08 0.04 290) 0%, oklch(0.06 0.03 280) 100%);
+            --gradient-text: linear-gradient(180deg, oklch(0.98 0.02 220) 0%, oklch(0.78 0.2 220) 50%, oklch(0.65 0.27 305) 100%);
+            --font-display: "Cinzel", "Space Grotesk", serif;
+            --font-body: "Space Grotesk", system-ui, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--gradient-cosmos);
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: var(--font-body);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide-container {
+            width: 90vw;
+            height: 80vh;
+            position: relative;
+            background: oklch(0.16 0.06 290 / 0.55);
+            backdrop-filter: blur(24px) saturate(140%);
+            border: 1px solid oklch(0.78 0.2 220 / 0.18);
+            border-radius: 2rem;
+            box-shadow: 0 0 80px -10px oklch(0.65 0.27 305 / 0.3);
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 4rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-display);
+            margin-top: 0;
+        }
+
+        .text-cosmic {
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 24px oklch(0.78 0.2 220 / 0.3);
+        }
+
+        .title-slide {
+            text-align: center;
+            align-items: center;
+        }
+
+        .title-slide h1 {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        ul {
+            font-size: 1.5rem;
+            line-height: 2;
+            color: oklch(0.8 0.05 280);
+        }
+
+        .split {
+            display: flex;
+            gap: 4rem;
+            align-items: center;
+            height: 100%;
+        }
+
+        .split > div {
+            flex: 1;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 1rem;
+        }
+        
+        .card h3 {
+            color: var(--primary);
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary);
+            color: var(--background);
+        }
+
+        .notes {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.3);
+            text-align: center;
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slide-container">
+        <!-- Slide 1 -->
+        <div class="slide active title-slide">
+            <div style="font-family: var(--font-display); font-size: 6rem; color: var(--primary); margin-bottom: 1rem;">ψ</div>
+            <h1 class="text-cosmic">POSEIDON</h1>
+            <div class="subtitle">Mint your soul on-chain</div>
+            <p style="margin-top: 2rem; opacity: 0.7;">Colosseum Solana Frontier Hackathon</p>
+            <div class="notes">Script: "What if the oldest form of human identity could become the newest form of digital identity on the fastest blockchain in the world? This is Poseidon."</div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide">
+            <h2 class="text-cosmic" style="font-size: 3rem;">The Problem</h2>
+            <div class="split">
+                <div>
+                    <h3 style="color: #ff4444;">Current Web3 Identity</h3>
+                    <ul>
+                        <li>Generic PFP NFTs lack personal meaning</li>
+                        <li>Random traits, zero emotional connection</li>
+                        <li>Doesn't reflect who you <em>are</em></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="color: var(--primary);">Current Astrology ($14B Market)</h3>
+                    <ul>
+                        <li>Stuck in Web2 walled gardens</li>
+                        <li>No true ownership</li>
+                        <li>Not portable across platforms</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="notes">Script: "NFTs promised identity, but we got random jpegs... The astrology market is $14B but stuck in Web2. There's a gap."</div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide">
+            <h2 class="text-cosmic" style="font-size: 3rem;">The Solution</h2>
+            <div style="font-size: 1.8rem; line-height: 1.6; max-width: 800px; margin: 0 auto; text-align: center; margin-top: 2rem;">
+                <p>An <strong style="color: var(--primary);">AI-powered cosmic identity platform</strong> built on Solana.</p>
+                <p>Connect wallet &rarr; Provide birth/palm data &rarr; Gemini AI Generates Profile &rarr; Mint 1-of-1 NFT</p>
+                <p style="color: var(--gold); margin-top: 2rem; font-family: var(--font-display);">Your soul, tokenized and permanent.</p>
+            </div>
+            <div class="notes">Script: "Poseidon is an AI-powered cosmic identity platform... forge it into a one-of-one Cosmic Identity NFT."</div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide title-slide">
+            <h2 class="text-cosmic" style="font-size: 4rem;">Live Product Demo</h2>
+            <p style="font-size: 1.5rem; opacity: 0.7; margin-top: 2rem;">[ Insert 40-second screen recording here ]</p>
+            <div style="margin-top: 3rem; display: flex; gap: 2rem; justify-content: center; color: var(--primary);">
+                <span>1. Astrology Engine</span> &rarr;
+                <span>2. Vision Palm Reading</span> &rarr;
+                <span>3. NFT Minting</span>
+            </div>
+            <div class="notes">Script: "Let me show you how it works... [Demo voiceover]"</div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide">
+            <h2 class="text-cosmic" style="font-size: 3rem; text-align: center;">Six Rituals</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>🌟 AI Astrology</h3>
+                    <p>Birth chart → zodiac, archetype, aura, element.</p>
+                </div>
+                <div class="card">
+                    <h3>✋ Vision Palm</h3>
+                    <p>Multimodal AI analyzes palm images for destiny reading.</p>
+                </div>
+                <div class="card">
+                    <h3>🎴 Identity NFT</h3>
+                    <p>1-of-1 Solana NFT with encoded traits and rarity.</p>
+                </div>
+                <div class="card">
+                    <h3>🔥 Daily Fortune</h3>
+                    <p>Collectible daily omens with streak mechanics.</p>
+                </div>
+                <div class="card">
+                    <h3>💼 Wallet Roast</h3>
+                    <p>AI roasts any Solana wallet's "degen aura".</p>
+                </div>
+                <div class="card">
+                    <h3>📊 Dashboard</h3>
+                    <p>Track your profile, NFT collection, and fortune history.</p>
+                </div>
+            </div>
+            <div class="notes">Script: "Six rituals. Astrology. Palm reading. NFT minting. Daily fortunes... Wallet roasts... And a cosmic dashboard."</div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide title-slide">
+            <h2 class="text-cosmic" style="font-size: 4rem;">Why Solana?</h2>
+            <div style="font-size: 2rem; margin-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
+                <div>⚡ Sub-second finality</div>
+                <div>💸 Sub-cent transaction costs</div>
+                <div>🌐 Largest consumer crypto community</div>
+            </div>
+            <p style="color: var(--primary); font-size: 1.5rem; margin-top: 3rem;">Minting an identity should feel instant.</p>
+            <div class="notes">Script: "Why Solana? Sub-second finality, sub-cent costs. Minting an identity should feel instant — and on Solana, it does."</div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="slide">
+            <h2 class="text-cosmic" style="font-size: 3rem; text-align: center;">Tech Stack</h2>
+            <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: 2rem; font-size: 1.5rem;">
+                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem 3rem; border-radius: 1rem; border: 1px solid var(--primary); width: 60%; text-align: center;">
+                    <strong>Frontend:</strong> TanStack Start (React + SSR)
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem 3rem; border-radius: 1rem; border: 1px solid #4285f4; width: 60%; text-align: center;">
+                    <strong>AI Engine:</strong> Google Gemini 2.5 Flash
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem 3rem; border-radius: 1rem; border: 1px solid #3ecf8e; width: 60%; text-align: center;">
+                    <strong>Backend:</strong> Supabase
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem 3rem; border-radius: 1rem; border: 1px solid #14f195; width: 60%; text-align: center;">
+                    <strong>Blockchain:</strong> Solana + Metaplex Core
+                </div>
+            </div>
+            <div class="notes">Script: "Under the hood: TanStack Start, Google Gemini for multimodal AI, Supabase for persistence, and Solana with Metaplex."</div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="slide title-slide">
+            <h2 class="text-cosmic" style="font-size: 4rem;">Market & Vision</h2>
+            <p style="font-size: 1.5rem; margin-top: 2rem; line-height: 1.8; max-width: 800px; margin-left: auto; margin-right: auto;">
+                Astrology is a <strong>$14 Billion</strong> market.<br>
+                The NFT identity space is wide open.<br>
+                Poseidon sits at the intersection.
+            </p>
+            <div style="margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.05); border-radius: 1rem; border-left: 4px solid var(--gold);">
+                <strong style="color: var(--gold); font-size: 1.8rem;">Vision:</strong><br>
+                <span style="font-size: 1.4rem;">The default cosmic identity layer for Solana — portable across wallets, dApps, and metaverses.</span>
+            </div>
+            <div class="notes">Script: "Astrology is a 14-billion-dollar market... Our vision: Poseidon becomes the default cosmic identity layer for Solana."</div>
+        </div>
+
+        <!-- Slide 9 -->
+        <div class="slide title-slide">
+            <h2 class="text-cosmic" style="font-size: 4rem;">The Team</h2>
+            <div style="display: flex; gap: 4rem; justify-content: center; margin-top: 3rem;">
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.1); width: 300px;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--primary); margin: 0 auto 1rem; opacity: 0.5;"></div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Swarnim Bajracharya</h3>
+                    <p style="color: var(--primary); margin: 0;">Co-Founder</p>
+                    <p style="font-size: 0.9rem; opacity: 0.7;">Narayangarh, Nepal</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.1); width: 300px;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--accent); margin: 0 auto 1rem; opacity: 0.5;"></div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Safal Gautam</h3>
+                    <p style="color: var(--primary); margin: 0;">Co-Founder</p>
+                    <p style="font-size: 0.9rem; opacity: 0.7;">Dhulikhel, Nepal</p>
+                </div>
+            </div>
+            <div class="notes">Script: "We're Swarnim and Safal — two builders from Nepal passionate about AI and crypto."</div>
+        </div>
+
+        <!-- Slide 10 -->
+        <div class="slide title-slide">
+            <div style="font-family: var(--font-display); font-size: 6rem; color: var(--gold); margin-bottom: 1rem; text-shadow: 0 0 40px var(--gold);">ψ</div>
+            <h1 class="text-cosmic">POSEIDON</h1>
+            <div class="subtitle">The cosmos is waiting.</div>
+            <div class="notes">Script: "Poseidon. Mint your soul on-chain. The cosmos is waiting. Thank you."</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="prevSlide()">&larr;</button>
+        <button onclick="nextSlide()">&rarr;</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showSlide(index) {
+            slides.forEach(s => s.classList.remove('active'));
+            if (index >= slides.length) currentSlide = 0;
+            if (index < 0) currentSlide = slides.length - 1;
+            slides[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+    </script>
+</body>
+</html>
