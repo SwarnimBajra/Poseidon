@@ -202,6 +202,63 @@ function Landing() {
         </div>
       </section>
 
+
+      {/* FOUNDERS */}
+<section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+  <div className="text-center mb-10">
+    <h2 className="font-display text-2xl sm:text-3xl text-cosmic">
+      Founders
+    </h2>
+    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mt-2">
+      The minds behind Poseidon
+    </p>
+  </div>
+
+  <div className="grid gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
+    {/* Founder 1 */}
+    <div className="relative group">
+      <div className="absolute inset-0 rounded-2xl bg-aurora opacity-0 group-hover:opacity-20 blur-xl transition-all" />
+      <div className="relative glass rounded-2xl p-6 border border-[oklch(0.78_0.2_220_/_0.25)] hover:ring-cosmic transition-all">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-full bg-[oklch(0.85_0.16_85)]/20 border border-[oklch(0.85_0.16_85)/40]" />
+          <div>
+            <p className="font-semibold text-foreground">
+              Swarnim Bajracharya
+            </p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">
+              Founder
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 text-sm text-muted-foreground">
+          Narayangarh, Nepal
+        </div>
+      </div>
+    </div>
+
+    {/* Founder 2 */}
+    <div className="relative group">
+      <div className="absolute inset-0 rounded-2xl bg-aurora opacity-0 group-hover:opacity-20 blur-xl transition-all" />
+      <div className="relative glass rounded-2xl p-6 border border-[oklch(0.65_0.27_305_/_0.25)] hover:ring-cosmic transition-all">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-full bg-[oklch(0.78_0.2_220)]/20 border border-[oklch(0.78_0.2_220)/40]" />
+          <div>
+            <p className="font-semibold text-foreground">
+              Safal Gautam
+            </p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">
+              Founder
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 text-sm text-muted-foreground">
+          Dhulikhel, Nepal
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
       {/* TESTIMONIALS */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
         <div className="text-center mb-14">
@@ -250,6 +307,7 @@ function Landing() {
           </div>
         </div>
       </section>
+
 
       <footer className="border-t border-[oklch(0.65_0.27_305_/_0.2)] mt-12">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
