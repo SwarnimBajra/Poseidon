@@ -129,7 +129,9 @@ function MintPage() {
                 <div className="glass-violet rounded-2xl p-5 ring-cosmic">
                   <div className="flex items-center gap-2 text-sm">
                     <Sparkles className="h-4 w-4 text-[oklch(0.85_0.16_85)]" />
-                    <span className="font-semibold">Mint confirmed</span>
+                    <span className="font-semibold">
+                      Prototype mint simulated
+                    </span>
                   </div>
                   <div className="mt-3 text-xs font-mono text-muted-foreground break-all">
                     {justMinted.txSignature.slice(0, 32)}…
@@ -212,7 +214,7 @@ export function NFTCard(props: {
           <Trait k="Fortune" v={`${props.fortuneScore}/100`} />
         </div>
         <div className="mt-3 text-[9px] font-mono text-muted-foreground truncate">
-          {props.sig ? `mint: ${props.sig.slice(0, 8)}…${props.sig.slice(-6)}` : "preview · not minted"} · solana devnet
+          {props.sig ? `mint: ${props.sig.slice(0, 8)}…${props.sig.slice(-6)}` : "preview · simulated devnet mint"} · solana devnet
         </div>
       </div>
     </div>
